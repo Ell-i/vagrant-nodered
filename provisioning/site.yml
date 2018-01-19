@@ -1,0 +1,8 @@
+--- # provisioning/site.yml
+- hosts: all
+  become: yes
+  roles:
+    - common
+    - libcoap
+    - nodejs
+    - nodered

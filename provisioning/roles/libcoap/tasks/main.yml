@@ -1,0 +1,32 @@
+--- # provisioning/roles/libcoap/tasks/main.yml
+- name: get GNUTLS source
+  when: ( ansible_os_family == "Debian" )
+  apt: name={{item}} state=installed
+  with_items:
+  - libgnutls-dev
+  - libtool
+  - autoconf
+  tags:
+  - libcoap
+
+- name: get libcoap source
+  git:
+    repo: https://github.com/obgm/libcoap
+    dest: "{{ansible_env.HOME}}/libcoap"
+  tags:
+  - libcoap
+
+- name: compile libcoap
+#   git fetch origin master
+#   git checkout master
+  shell: |
+    cd {{ansible_env.HOME}}/libcoap
+    ./autogen.sh
+    ./configure --prefix=/usr --disable-documentation --disable-dtls
+    make
+    sudo make install
+  args:
+    creates: /usr/local/include/coap/coap.h
+  tags:
+  - libcoap
+
